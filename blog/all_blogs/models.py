@@ -21,4 +21,4 @@ class Blog(models.Model):
     image = models.ImageField(upload_to='blogs_media/')
 
     def __str__(self):
-        return self.title + ' | ' + str(self.pub_date)
+        return f'{self.title} | {str(self.pub_date)}'
