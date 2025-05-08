@@ -5,25 +5,36 @@
 
 {% block content %}
 <div class="container">
-    <div class="row justify-content-center">
+    <div class="row justify-content-center"
       <div class="col-md-5 mt-5">
         <form method="post">
           {% csrf_token %}
           <div class="form-group">
+            <label for="exampleInputfirstname">First Name</label>
+            <input type="text" class="form-control" id="exampleInputfirstname" name="firstname">
+          </div>
+  
+          <div class="form-group">
+            <label for="exampleInputlastname">Last Name</label>
+            <input type="text" class="form-control" id="exampleInputlastname" name="lastname">
+          </div>
+  
+          <div class="form-group">
+            <label for="exampleInputUsername">Username</label>
+            <input type="text" class="form-control" id="exampleInputUsername" name="username">
+          </div>
+  
+          <div class="form-group">
             <label for="exampleInputEmail1">Email address</label>
-            <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+            <input type="email" class="form-control" id="exampleInputEmail1" name="email">
             <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
           </div>
+  
           <div class="form-group">
             <label for="exampleInputPassword1">Password</label>
-            <input type="password" class="form-control" id="exampleInputPassword1">
+            <input type="password" class="form-control" id="exampleInputPassword1" name="password">
           </div>
-          {% comment %} 
-          <div class="form-group form-check">
-            <input type="checkbox" class="form-check-input" id="exampleCheck1">
-            <label class="form-check-label" for="exampleCheck1">Check me out</label>
-          </div>
-          {% endcomment %}
+  
           <div class="form-group mt-2">
             <a href="{% url 'login_page' %}">Already have an account? Login here</a>
           </div>

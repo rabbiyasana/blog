@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils import timezone
+from django.contrib.auth.models import User
 
 class Blog(models.Model):
     BLOGS_TYPE=[
@@ -14,6 +15,8 @@ class Blog(models.Model):
         ('business','Business'),
         ('entertainment','Entertainment')
     ]
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='blogs', null=True, blank=True)
+
     title = models.CharField(max_length=200)
     pub_date = models.DateTimeField(default=timezone.now)
     body = models.TextField()
