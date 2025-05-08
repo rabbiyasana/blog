@@ -1,6 +1,7 @@
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
+from django.contrib import messages
 def home(request):
     # return HttpResponse("Hello you are at the home page")
     return render(request, 'website/index.html')
@@ -17,17 +18,21 @@ def register_page(request):
         username = request.POST.get('username')
         email = request.POST.get('email')
         password = request.POST.get('password')
+        
+        if User.objects.filter(username=username).exists():
+            messages.error(request, "Username already exists.")
+            return redirect('register_page')
 
-        new_user  = User.objects.create(
+        User.objects.create_user(
             first_name=firstname,
             last_name=lastname,
             username=username,
             email=email,
-           
+            password=password
         )
-        new_user.set_password(password)
-        new_user.save()
+        messages.success(request, "Account created successfully.")
         return redirect('login_page')
+
 
 
     return render(request, 'website/register.html')
