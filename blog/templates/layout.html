@@ -32,8 +32,11 @@
             </li>
            
           </ul>
+          {% if request.user.is_authenticated %}
+          <a href="{% url 'logout_page' %}" class="nav-link m-3 px-5 bg-light hover:bg-blue-700 text-black text-lg rounded" >logout</a>
+          {% else %}
           <a href="{% url 'login_page' %}" class="nav-link m-3 px-5 bg-light hover:bg-blue-700 text-black text-lg rounded" >login</a>
-
+          {% endif %}
         </div>
       </div>
     </nav>

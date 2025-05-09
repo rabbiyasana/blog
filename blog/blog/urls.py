@@ -9,6 +9,8 @@ urlpatterns = [
     path('', views.home, name='home'),
     path('login_page/', views.login_page, name='login_page'),
     path('register_page/', views.register_page, name='register_page'),
+    path('logout_page/', views.logout_page, name='logout_page'),
+    path('verify-email/<int:user_id>/', views.verify_email, name='verify_email'),
 
     path('all_blogs/', include('all_blogs.urls')),
     path("__reload__/", include("django_browser_reload.urls")),

@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+
+{% block title %}My Blog{% endblock %}
+{% block header %}
+    {% comment %} <h1>Welcome to My Blog</h1> {% endcomment %}
+{% endblock header %}
+
+{% block content %}
+    <form method="post">
+    {% csrf_token %}
+    <p>Enter OTP sent to {{ user.email }}:</p>
+    <input type="text" name="otp" required />
+    <button type="submit">Verify</button>
+</form>
+{% endblock content %}
