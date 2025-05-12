@@ -1,6 +1,6 @@
 import random
 
-from django.http import HttpResponse
+from django.http import HttpResponse # type: ignore
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib import messages
@@ -11,7 +11,7 @@ from all_blogs.models import UserProfile
 
 
 def home(request):
-    # return HttpResponse("Hello you are at the home page")
+    
     return render(request, 'website/index.html')
 
 def generate_otp():
@@ -20,10 +20,14 @@ def generate_otp():
 
 def login_page(request):
     if request.method == 'POST':
-        username = request.POST.get('username', '').strip()
+        email = request.POST.get('email', '').strip()
         password = request.POST.get('password')
 
-        user = authenticate(request, username=username, password=password)
+        try:
+            user_obj = User.objects.get(email=email)
+            user = authenticate(request, username=user_obj.username, password=password)
+        except User.DoesNotExist:
+            user = None
 
         if user is None:
             messages.error(request, "Invalid credentials or user does not exist.")
@@ -56,7 +60,6 @@ def register_page(request):
 
         otp = generate_otp()
 
-        # Store user details + otp in session
         request.session['pending_registration'] = {
             'firstname': firstname,
             'lastname': lastname,
@@ -66,7 +69,6 @@ def register_page(request):
             'otp': otp,
         }
 
-        # Send OTP to email
         send_mail(
             'Your OTP Code',
             f'Your OTP is: {otp}',
@@ -76,7 +78,7 @@ def register_page(request):
         )
 
         messages.success(request, "OTP sent to your email. Please verify.")
-        return redirect('verify_email')  # No user_id required now
+        return redirect('verify_email') 
 
     return render(request, 'website/register.html')
 
@@ -91,7 +93,6 @@ def verify_email(request):
     if request.method == 'POST':
         entered_otp = request.POST.get('otp', '').strip()
         if entered_otp == data.get('otp'):
-            # Create the user after OTP verification
             user = User.objects.create_user(
                 first_name=data['firstname'],
                 last_name=data['lastname'],

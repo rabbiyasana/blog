@@ -1,15 +1,21 @@
 {% extends "layout.html" %}
 
-{% block title %}My Blog{% endblock %}
-{% block header %}
-    {% comment %} <h1>Welcome to My Blog</h1> {% endcomment %}
-{% endblock header %}
+{% block title %}Verify OTP{% endblock %}
 
 {% block content %}
-    <form method="post">
-    {% csrf_token %}
-    <p>Enter OTP sent to {{ user.email }}:</p>
-    <input type="text" name="otp" required />
-    <button type="submit">Verify</button>
-</form>
-{% endblock content %}
+<div class="d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+  <div class="card p-4 shadow-lg" style="min-width: 350px;">
+    <h4 class="mb-3 text-center">OTP Verification</h4>
+    <form method="post" novalidate>
+      {% csrf_token %}
+      <div class="mb-3">
+        <label for="otp" class="form-label">Enter OTP sent to <strong>{{ user.email }}</strong>:</label>
+        <input type="text" id="otp" name="otp" class="form-control" placeholder="Enter OTP" required />
+      </div>
+      <div class="d-grid">
+        <button type="submit" class="btn btn-dark">Verify</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
