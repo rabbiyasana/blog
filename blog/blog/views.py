@@ -23,19 +23,16 @@ def login_page(request):
         username = request.POST.get('username', '').strip()
         password = request.POST.get('password')
 
-        try:
-            user = User.objects.get(username=username)
-        except User.DoesNotExist:
-            messages.error(request, "Username does not exist.")
-            return redirect('login_page')
+        user = authenticate(request, username=username, password=password)
 
+        if user is None:
+            messages.error(request, "Invalid credentials or user does not exist.")
+            return redirect('login_page')
+        
+        print(f"Uverification status: {user.userprofile.is_email_verified}")
+        # Check if email is verified
         if not user.userprofile.is_email_verified:
             messages.error(request, "Please verify your email before logging in.")
-            return redirect('login_page')
-
-        user = authenticate(request, username=username, password=password)
-        if user is None:
-            messages.error(request, "Invalid credentials.")
             return redirect('login_page')
 
         login(request, user)
@@ -56,46 +53,67 @@ def register_page(request):
         if User.objects.filter(username=username).exists():
             messages.error(request, "Username already exists.")
             return redirect('register_page')
- 
-        user=User.objects.create_user(
-            first_name=firstname,
-            last_name=lastname,
-            username=username,
-            email=email,
-            password=password
-        )
 
         otp = generate_otp()
-        user.userprofile.email_otp = otp
-        user.userprofile.save()
 
+        # Store user details + otp in session
+        request.session['pending_registration'] = {
+            'firstname': firstname,
+            'lastname': lastname,
+            'username': username,
+            'email': email,
+            'password': password,
+            'otp': otp,
+        }
+
+        # Send OTP to email
         send_mail(
-    'Your OTP Code',
-    f'Your OTP is: {otp}',
-    settings.EMAIL_HOST_USER,
-    [user.email],
-    fail_silently=False,
-)
-        messages.success(request, "Account created. Please verify your email.")
-        return redirect('verify_email', user_id=user.id)  
+            'Your OTP Code',
+            f'Your OTP is: {otp}',
+            settings.EMAIL_HOST_USER,
+            [email],
+            fail_silently=False,
+        )
+
+        messages.success(request, "OTP sent to your email. Please verify.")
+        return redirect('verify_email')  # No user_id required now
 
     return render(request, 'website/register.html')
 
-def verify_email(request, user_id):
-    user = User.objects.get(id=user_id)
+
+def verify_email(request):
+    data = request.session.get('pending_registration')
+
+    if not data:
+        messages.error(request, "Session expired or invalid access.")
+        return redirect('register_page')
+
     if request.method == 'POST':
-        entered_otp = request.POST.get('otp')
-        profile = user.userprofile
-        if entered_otp == profile.email_otp:
-            profile.is_email_verified = True
-            profile.email_otp = None
-            profile.save()
-            messages.success(request, "Email verified! You can login now.")
+        entered_otp = request.POST.get('otp', '').strip()
+        if entered_otp == data.get('otp'):
+            # Create the user after OTP verification
+            user = User.objects.create_user(
+                first_name=data['firstname'],
+                last_name=data['lastname'],
+                username=data['username'],
+                email=data['email'],
+                password=data['password']
+            )
+            print(f"User created: {user}")
+            # Set email verification flag to True
+            user.userprofile.is_email_verified = True
+            print(f"Uverification status: {user.userprofile.is_email_verified}")
+            user.userprofile.save()
+
+            # Clear session after account creation
+            del request.session['pending_registration']
+
+            messages.success(request, "Email verified! You can now log in.")
             return redirect('login_page')
         else:
-            messages.error(request, "Incorrect OTP.")
+            messages.error(request, "Invalid OTP. Try again.")
 
-    return render(request, 'website/verify_email.html', {'user': user})
+    return render(request, 'website/verify_email.html')
 
 
 def logout_page(request):   
