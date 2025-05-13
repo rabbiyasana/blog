@@ -43,7 +43,7 @@ def login_page(request):
         messages.success(request, "Login successful.")
         return redirect('all_blogs') 
 
-    return render(request, 'website/login.html')
+    return render(request, 'website/auth/login.html')
 
 
 def register_page(request):
@@ -80,7 +80,7 @@ def register_page(request):
         messages.success(request, "OTP sent to your email. Please verify.")
         return redirect('verify_email') 
 
-    return render(request, 'website/register.html')
+    return render(request, 'website/auth/register.html')
 
 
 def verify_email(request):
@@ -114,7 +114,7 @@ def verify_email(request):
         else:
             messages.error(request, "Invalid OTP. Try again.")
 
-    return render(request, 'website/verify_email.html')
+    return render(request, 'website/auth/verify_email.html')
 
 
 def logout_page(request):   
