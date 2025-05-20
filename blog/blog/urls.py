@@ -5,7 +5,8 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.auth import views as auth_views
 
-from . import views
+from .views import views
+from .views.post_views import create_post,delete_post,edit_post
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.home, name='home'),
@@ -18,6 +19,12 @@ urlpatterns = [
     path('reset-password-sent/', auth_views.PasswordResetDoneView.as_view(template_name='website/auth/password_reset_sent.html'), name='password_reset_done'),
     path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(template_name='website/auth/password_reset_form.html'), name='password_reset_confirm'),
     path('reset-password-complete/', auth_views.PasswordResetCompleteView.as_view(template_name='website/auth/password_reset_done.html'), name='password_reset_complete'),
+    
+    path('create_post/', create_post.create_post, name='create_post'),
+    path('delete_post/<int:blog_id>/', delete_post.delete_post, name='delete_post'),
+    path('edit_post/<int:blog_id>/', edit_post.edit_post, name='edit_post'),
+   
+
 
     path('all_blogs/', include('all_blogs.urls')),
     path("__reload__/", include("django_browser_reload.urls")),

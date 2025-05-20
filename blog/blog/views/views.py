@@ -122,3 +122,5 @@ def logout_page(request):
     logout(request)
     messages.success(request, "Logged out successfully.")
     return redirect('home')  
+
+

@@ -20,7 +20,7 @@
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
+        < class="collapse navbar-collapse" id="navbarTogglerDemo01">
           <a class="navbar-brand" href="{% url 'home' %}">Home</a>
           <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             <li class="nav-item">
@@ -34,8 +34,18 @@
             </li>
            
           </ul>
+       
+         <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+            <li>
+              <a class="dropdown-item d-flex align-items-center gap-2 text-white" href="{% url 'create_post' %}">
+                <i class="bi bi-plus"></i> Create Post
+              </a>
+            </li>
+          </ul>
+       
          {% if request.user.is_authenticated %}
-        <div class="dropdown">
+        
+         <div class="dropdown">
           <button class="btn  d-flex align-items-center gap-2 dropdown-toggle px-3 py-2 text-white " type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
             <i class="bi bi-person-circle"></i>
             {{ request.user.username }}

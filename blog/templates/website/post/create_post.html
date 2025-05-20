@@ -1,0 +1,62 @@
+{% extends "layout.html" %}
+
+{% block title %}Create Blog{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <h2>Create a Blog Post</h2>
+
+      {% if messages %}
+        {% for message in messages %}
+          <div class="alert alert-info">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+
+      <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <div class="form-group">
+          <label for="id_title">Title</label>
+          <input type="text" name="title" class="form-control" id="id_title" required>
+        </div>
+
+        <div class="form-group mt-3">
+          <label for="id_body">Body</label>
+          <textarea name="body" class="form-control" id="id_body" rows="5" required></textarea>
+        </div>
+
+        <div class="form-group mt-3">
+          <label for="id_blog_type">Blog Type</label>
+          <select name="blog_type" class="form-control" id="id_blog_type" required>
+            <option value="">Choose one</option>
+            <option value="food">Food</option>
+            <option value="travel">Travel</option>
+            <option value="lifestyle">Lifestyle</option>
+            <option value="technology">Technology</option>
+            <option value="fashion">Fashion</option>
+            <option value="fitness">Fitness</option>
+            <option value="health">Health</option>
+            <option value="education">Education</option>
+            <option value="business">Business</option>
+            <option value="entertainment">Entertainment</option>
+          </select>
+        </div>
+
+        <div class="form-group mt-3">
+          <label for="id_price">Price</label>
+          <input type="number" name="price" class="form-control" id="id_price" step="0.01" required>
+        </div>
+
+        <div class="form-group mt-3">
+          <label for="id_image">Upload Image</label>
+          <input type="file" name="image" class="form-control-file" id="id_image" accept="image/*" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary mt-4">Post Blog</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

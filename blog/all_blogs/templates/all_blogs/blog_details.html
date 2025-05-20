@@ -1,22 +1,147 @@
-{% extends "layout.html" %}
-
-{% block title %}All Blogs{% endblock %}
-
+{% extends "layout.html" %} {% block title %}All Blogs{% endblock %} 
 {% block content %}
 
-    <div class="mx-5 my-5 max-w-lg bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
-       
-        <a href="#">
-            <img class="w-100 h-70 rounded-t-lg" src="{{blog.image.url}}" alt="blog image" />
-        </a>   
-        
-        <div class="p-5">
-            <a href="#">
-                <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white"> {{ blog.title}}</h5>
-            </a>
-            <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">{{blog.body}}</p>
-        </div>
+<div class="container my-5">
+  <div class="row border rounded shadow-sm p-4 bg-white">
+    <!-- Left: Image -->
+    <div class="col-md-5">
+      <img
+        src="{{ blog.image.url }}"
+        alt="blog image"
+        class="img-fluid rounded"
+        style="max-height: 250px; object-fit: cover"
+      />
     </div>
 
+    <!-- Right: Content -->
+    <div class="col-md-7">
+      <h3 class="text-dark">{{ blog.title }}</h3>
+      <p class="text-muted">{{ blog.body|truncatewords:40 }}</p>
 
+      <p class="text-success fw-bold mb-2">Price: ${{ blog.price }}</p>
+
+      <div class="d-flex gap-2 mt-3">
+        <a href="#" class="btn btn-sm btn-outline-primary" onclick="toggleEdit()"
+          >Edit</a
+        >
+       
+        {% comment %} delete the pos {% endcomment %}
+        <button
+          type="button"
+          class="btn btn-sm btn-outline-danger"
+          data-bs-toggle="modal"
+          data-bs-target="#deleteModal{{ blog.id }}"
+        >
+          Delete
+        </button>
+        <div
+          class="modal fade"
+          id="deleteModal{{ blog.id }}"
+          tabindex="-1"
+          aria-labelledby="deleteModalLabel{{ blog.id }}"
+          aria-hidden="true"
+        >
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel{{ blog.id }}">
+                  Confirm Delete
+                </h5>
+                <button
+                  type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
+              </div>
+
+              <div class="modal-body">
+                Are you sure you want to delete this blog titled "<strong
+                  >{{ blog.title }}</strong
+                >"?
+              </div>
+
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  data-bs-dismiss="modal"
+                >
+                  Cancel
+                </button>
+
+                <form method="POST" action="{% url 'delete_post' blog.id %}">
+                  {% csrf_token %}
+                  <button type="submit" class="btn btn-danger">
+                    Yes, Delete
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% comment %} delete modal {% endcomment %}
+        <a href="" class="btn btn-sm btn-outline-success">Buy</a>
+        
+      </div>
+    </div>
+     <form
+          method="POST"
+          enctype="multipart/form-data"
+          action="{% url 'edit_post' blog.id %}"
+          id="editForm"
+          style="display: none"
+        >
+          {% csrf_token %}
+          <div class="mb-2">
+            <label>Title</label>
+            <input
+              type="text"
+              name="title"
+              value="{{ blog.title }}"
+              class="form-control"
+            />
+          </div>
+          <div class="mb-2">
+            <label>Body</label>
+            <textarea name="body" class="form-control" rows="4">
+                {{ blog.body }}</textarea
+            >
+          </div>
+          <div class="mb-2">
+            <label>Price</label>
+            <input
+              type="number"
+              name="price"
+              value="{{ blog.price }}"
+              class="form-control"
+            />
+          </div>
+          <div class="mb-2">
+            <label>Image</label>
+            <input type="file" name="image" class="form-control" />
+          </div>
+          <button type="submit" class="btn btn-success btn-sm">Save</button>
+          <button
+            type="button"
+            class="btn btn-secondary btn-sm"
+            onclick="toggleEdit()"
+          >
+            Cancel
+          </button>
+        </form>
+
+  </div>
+</div>
+
+<script>
+  function toggleEdit() {
+     event.preventDefault();
+    const form = document.getElementById("editForm");
+    form.style.display = form.style.display === "none" ? "block" : "none";
+    if (form.style.display === "block") {
+      form.scrollIntoView({ behavior: "smooth" });
+    }
+  }
+</script>
 {% endblock content %}
